@@ -9,7 +9,7 @@ function App() {
   useEffect(() => {
     console.log("Id Changed");
     let currentTodo =
-      currentId != 0
+      currentId !== 0
         ? todos.find((todo) => todo._id === currentId)
         : { title: "", content: "" };
     setTodo(currentTodo);
@@ -19,7 +19,7 @@ function App() {
     const fetchData = async () => {
       const result = await readTodos();
       setTodos(result);
-      console.log(result);
+      // console.log(result);
     };
     fetchData();
   }, []);
@@ -45,19 +45,23 @@ function App() {
       clear();
     } else {
       await updateTodo(currentId, todo);
+      const result = await readTodos();
+      setTodos(result);
       clear();
     }
   };
   const deleteTodoHandler = async (id) => {
     await deleteTodo(id);
-    const todosCopy = [...todos];
-    todosCopy.filter((todo) => todo._id !== id);
-    setTodos(todosCopy);
+    // const todosCopy = [...todos];
+    // todosCopy.filter((todo) => todo._id !== id);
+    const result = await readTodos();
+    setTodos(result);
+    clear();
   };
   return (
     <div className="container">
       <div className="row">
-        <pre>{JSON.stringify(todo)}</pre>
+        {/* <pre>{JSON.stringify(todo)}</pre> */}
         <form className="col s12" onSubmit={onSubmitHandler}>
           <div className="row">
             <div className="input-field col s6">
@@ -98,14 +102,16 @@ function App() {
                 className="collection-item"
               >
                 <h5>{todo.title}</h5>
-                <p>{todo.content}</p>
-                <a
-                  href="#!"
-                  onClick={() => deleteTodoHandler(todo._id)}
-                  className="secondary-content"
-                >
-                  <i className="material-icons">delete</i>
-                </a>
+                <div>
+                  {todo.content}
+                  <a
+                    href="#!"
+                    onClick={() => deleteTodoHandler(todo._id)}
+                    className="secondary-content"
+                  >
+                    <i className="material-icons">delete</i>
+                  </a>
+                </div>
               </li>
             ))}
           </ul>
